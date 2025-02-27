@@ -112,6 +112,22 @@ async function processExcelToTreeJSON(inputFilePath, outputFilePath) {
             });
         });
 
+        // Remove metadata from non-leaf nodes
+        outputNodes.forEach(node => {
+            // A node is a leaf if it has no children
+            const isLeaf = node._child.length === 0;
+
+            if (!isLeaf) {
+                // Reset metadata fields for non-leaf nodes
+                node['Business Role'] = '';
+                node['Fiori app UX recommendations'] = '';
+                node['Insights (Indicative)'] = '';
+                node['Business stakeholders'] = '';
+                node['Materiality'] = 0;
+                node['Description'] = '';
+            }
+        });
+
         // Write the output JSON file
         fs.writeFileSync(outputFilePath, JSON.stringify(outputNodes, null, 2));
 
